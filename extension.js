@@ -631,6 +631,11 @@ function refresh_status_bar_buttons(active_doc=null) {
     var language_id = active_doc.languageId;
     if (!dialect_map.hasOwnProperty(language_id))
         return;
+
+    const config = vscode.workspace.getConfiguration('rainbow_csv');
+    if (config && config.get('enable_status_bar_commands') === false)
+        return;
+
     show_lint_status_bar_button(file_path, language_id);
     show_rbql_status_bar_button();
     show_align_shrink_button(file_path);
@@ -793,6 +798,7 @@ function handle_command_result(src_table_path, dst_table_path, error_code, stdou
 function get_dst_table_name(input_path, output_delim) {
     var table_name = path.basename(input_path);
     var orig_extension = path.extname(table_name);
+    var extensionless_table_name = path.basename(input_path, orig_extension);
     var delim_ext_map = {'\t': '.tsv', ',': '.csv'};
     var dst_extension = '.txt';
     if (delim_ext_map.hasOwnProperty(output_delim)) {
@@ -800,7 +806,19 @@ function get_dst_table_name(input_path, output_delim) {
     } else if (orig_extension.length > 1) {
         dst_extension = orig_extension;
     }
-    return table_name + dst_extension;
+
+    let dst_table_name = table_name + dst_extension;
+
+    const config = vscode.workspace.getConfiguration('rainbow_csv');
+    let output_filename_template = config ? config.get('output_filename_template') : '';
+    if (output_filename_template) {
+        var output_filename = output_filename_template
+            .replace('{basename}', extensionless_table_name)
+            .replace('{extname}', orig_extension);
+        dst_table_name = output_filename + dst_extension;
+    }
+
+    return dst_table_name;
 }
 
 
@@ -832,7 +850,7 @@ function run_rbql_query(input_path, csv_encoding, backend_language, rbql_query, 
         [output_delim, output_policy] = ['\t', 'simple'];
     rbql_context.output_delim = output_delim;
 
-    let tmp_dir = os.tmpdir();
+    let tmp_dir = get_tmpdir(input_path);
     let output_file_name = get_dst_table_name(input_path, output_delim);
     let output_path = path.join(tmp_dir, output_file_name);
 
@@ -863,6 +881,14 @@ function run_rbql_query(input_path, csv_encoding, backend_language, rbql_query, 
     }
 }
 
+function get_tmpdir(input_path) {
+    let tmpdir = os.tmpdir();
+    const config = vscode.workspace.getConfiguration('rainbow_csv');
+    if (config && config.get('output_dir') === 'inputDir')
+        tmpdir = path.dirname(input_path);
+
+    return tmpdir;
+}
 
 function get_dialect(document) {
     var language_id = document.languageId;
@@ -1362,7 +1388,7 @@ function edit_rbql() {
         "header": header
     };
 
-    preview_panel = vscode.window.createWebviewPanel('rbql-console', 'RBQL Console', vscode.ViewColumn.Active, {enableScripts: true});
+    preview_panel = vscode.window.createWebviewPanel('rbql-console', `Query - ${path.basename(input_path)}`, vscode.ViewColumn.Active, {enableScripts: true});
     if (!client_html_template) {
         client_html_template = fs.readFileSync(absolute_path_map['rbql_client.html'], "utf8");
     }

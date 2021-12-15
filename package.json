@@ -85,12 +85,12 @@
                 },
                 "rainbow_csv.enable_tooltip_warnings": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Show warnings in tooltip"
                 },
                 "rainbow_csv.enable_auto_csv_lint": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Enable automatic linting/checking of opened csv files"
                 },
                 "rainbow_csv.csv_lint_detect_trailing_spaces": {
@@ -105,27 +105,100 @@
                 },
                 "rainbow_csv.enable_context_menu_head": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Enable \"Preview CSV head\" option in File Explorer context menu"
                 },
                 "rainbow_csv.enable_context_menu_tail": {
                     "type": "boolean",
                     "default": false,
                     "description": "Enable \"Preview CSV tail\" option in File Explorer context menu"
+                },
+                "rainbow_csv.output_dir": {
+                    "type": "string",
+                    "default": "inputDir",
+                    "description": "the output directory of the results file",
+                    "enum": [
+                        "tmpDir",
+                        "inputDir"
+                    ],
+                    "enumDescriptions": [
+                        "output file will be in the tmpdir of the operating system",
+                        "output file will be in same directory of the input file"
+                    ]
+                },
+                "rainbow_csv.output_filename_template": {
+                    "type": "string",
+                    "default": "{basename}-query",
+                    "description": "Optional output file name template. Use {basename} for the filename without extension, and {extname} for the extension. Eg., rbql-{basename}-results.{extname} would change blah.csv to rbql-blah-results.csv"
+                },
+                "rainbow_csv.enable_status_bar_commands": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable the status bar commands"
                 }
             }
         },
         "menus": {
-            "editor/context": [
+            "commandPalette": [
                 {
-                    "when": "editorHasSelection",
-                    "command": "rainbow-csv.RainbowSeparator",
-                    "group": "rainbow_csv"
+                    "command": "rainbow-csv.CSVLint",
+                    "when": "false"
                 },
                 {
-                    "when": "editorTextFocus",
+                    "command": "rainbow-csv.SetVirtualHeader",
+                    "when": "false"
+                },
+                {
                     "command": "rainbow-csv.SetHeaderLine",
-                    "group": "rainbow_csv"
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.RBQL",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.SetJoinTableName",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.ColumnEditBefore",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.ColumnEditAfter",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.ColumnEditSelect",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.RainbowSeparator",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.RainbowSeparatorOff",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.Align",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.Shrink",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.CopyBack",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.SampleHead",
+                    "when": "false"
+                },
+                {
+                    "command": "rainbow-csv.SampleTail",
+                    "when": "false"
                 }
             ],
             "explorer/context": [
@@ -138,6 +211,83 @@
                     "command": "rainbow-csv.SampleTail",
                     "when": "config.rainbow_csv.enable_context_menu_tail",
                     "group": "rainbow_csv"
+                }
+            ],
+            "editor/title": [
+                {
+                    "when": "editorLangId == csv",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == tsv",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == CSV",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == TSV",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'CSV (semicolon)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (semicolon)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (pipe)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (whitespace)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (tilde)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (caret)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (colon)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (double quote)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (equals)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (dot)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorLangId == 'csv (hyphen)'",
+                    "command": "rainbow-csv.RBQL",
+                    "group": "navigation"
                 }
             ]
         },
@@ -251,6 +401,7 @@
         "commands": [
             {
                 "command": "rainbow-csv.CSVLint",
+                "category": "Rainbow CSV",
                 "title": "CSV Lint"
             },
             {
@@ -266,7 +417,11 @@
             {
                 "command": "rainbow-csv.RBQL",
                 "category": "Rainbow CSV",
-                "title": "RBQL"
+                "title": "Query",
+                "icon": {
+                    "light": "./media/query_light.png",
+                    "dark": "./media/query_dark.png"
+                }
             },
             {
                 "command": "rainbow-csv.SetJoinTableName",
@@ -290,10 +445,12 @@
             },
             {
                 "command": "rainbow-csv.RainbowSeparator",
+                "category": "Rainbow CSV",
                 "title": "Set as Rainbow separator"
             },
             {
                 "command": "rainbow-csv.RainbowSeparatorOff",
+                "category": "Rainbow CSV",
                 "title": "RainbowSeparatorOff"
             },
             {
@@ -308,14 +465,17 @@
             },
             {
                 "command": "rainbow-csv.CopyBack",
+                "category": "Rainbow CSV",
                 "title": "CopyBack"
             },
             {
                 "command": "rainbow-csv.SampleHead",
+                "category": "Rainbow CSV",
                 "title": "Preview big CSV: head"
             },
             {
                 "command": "rainbow-csv.SampleTail",
+                "category": "Rainbow CSV",
                 "title": "Preview big CSV: tail"
             }
         ],
