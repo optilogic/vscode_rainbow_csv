@@ -413,10 +413,10 @@ table th:first-child, table td:first-child {
         <input type="text" id="rbql_input" placeholder="Example: SELECT a1, a2 WHERE a2 != 'foobar' ORDER BY a1 LIMIT 10" autofocus><!--
         --><button id="toggle_history_btn" title="Query history">&#9650;</button><!--
         --><button id="rbql_run_btn" title="Run query and open result set in a new tab">Run</button><!--
-        --><button id="help_btn" title="Help">?</button>
+        --><button id="help_btn" title="Help" style="display:none;">?</button>
     </div>
-    <h3 style="margin-bottom: 6px; margin-top: 10px;">&#9881; Query settings</h3>
-    <div style="margin-left: 30px;">
+    <h3 style="margin-bottom: 6px; margin-top: 10px; display:none;">&#9881; Query settings</h3>
+    <div style="margin-left: 30px; display:none;">
         <div id="with_headers_section">
             <label style="word-wrap:break-word" title="Indicate that the input (and join) table has header in the first line"><input class="checkbox_input" id="with_headers" type="checkbox"/>Input table has header</label>
         </div>
@@ -448,12 +448,24 @@ table th:first-child, table td:first-child {
             </div>
             <select class="select_input" id="select_backend_language">
               <option class="select_input" value="js">JavaScript</option>
-              <option class="select_input" value="pyhon">Python (Requires python installed)</option>
+              <option class="select_input" value="python" selected>Python (Requires python installed)</option>
             </select>
         </div>
         <div>
             <button id="udf_button" title="Edit UDF (User Defined Functions) - will open a new tab with UDF file">Edit UDF...</button>
         </div>
+    </div>
+    <div>
+        <h4 id="examples-of-rbql-queries">Examples of RBQL queries With Python expressions</h4>
+        <ul>
+        <li><code>select top 100 a1, int(a2) * 10, len(a4) where a1 == "Buy" order by int(a2) desc</code></li>
+        <li><code>select len(a.vehicle_price) / 10, a2 where int(a.vehicle_price) &lt; 500 and a['Vehicle type'] in ["car", "plane", "boat"] limit 20</code> - referencing columns by names from header and using Python's "in" to emulate SQL's "in"</li>
+        <li><code>update set a2 = int(a2) * 2.2 where a.destination.find('Europe') != -1</code> - convert from lbs to kg</li>
+        <li><code>select NR, *</code> - enumerate records, NR is 1-based</li>
+        <li><code>select * where re.match("(car|truck)", a1) is not None</code> - select entries where first column has "ab" pattern</li>
+        <li><code>select SUM(a1), MAX(a1), MIN(a1) where a.Name != 'John' group by a2, a3</code> - example of aggregate query</li>
+        </ul>
+        <div>To learn more, go to <a href="https://rbql.org/">rbql.org</a></div>
     </div>
 </div>
 

@@ -2,7 +2,7 @@
     "name": "rainbow-csv",
     "displayName": "Rainbow CSV",
     "description": "Highlight CSV and TSV files, Run SQL-like queries",
-    "version": "1.10.1",
+    "version": "1.10.2",
     "publisher": "mechatroner",
     "license": "MIT",
     "icon": "rainbow_csv_logo.png",
@@ -42,7 +42,7 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "Rainbow CSV",
+            "title": "CSV Query",
             "properties": {
                 "rainbow_csv.enable_separator_autodetection": {
                     "type": "boolean",
@@ -80,7 +80,7 @@
                 },
                 "rainbow_csv.rbql_with_headers_by_default": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "description": "RBQL treats the first line as header by default"
                 },
                 "rainbow_csv.enable_tooltip_warnings": {
