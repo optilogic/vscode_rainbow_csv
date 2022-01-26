@@ -1394,6 +1394,7 @@ function edit_rbql() {
     }
     let client_html = client_html_template;
     client_html = adjust_webview_paths(['contrib/textarea-caret-position/index.js', 'rbql_suggest.js', 'rbql_client.js', 'rbql_logo.svg'], client_html);
+    client_html = client_html.replace('--zachs-magic-number--', Date.now());
     preview_panel.webview.html = client_html;
     preview_panel.webview.onDidReceiveMessage(function(message) { handle_rbql_client_message(preview_panel.webview, message); });
 }
