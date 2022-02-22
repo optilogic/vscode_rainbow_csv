@@ -1178,7 +1178,7 @@ function handle_rbql_client_message(webview, message) {
     let message_type = message['msg_type'];
 
     if (message_type == 'handshake') {
-        var backend_language = get_from_global_state('rbql_backend_language', 'js');
+        var backend_language = get_from_global_state('rbql_backend_language', 'python');
         var encoding = get_from_global_state('rbql_encoding', 'utf-8');
         var init_msg = {'msg_type': 'handshake', 'backend_language': backend_language, 'encoding': encoding};
         sample_preview_records_from_context(rbql_context, init_msg);
